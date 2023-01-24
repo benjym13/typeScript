@@ -137,3 +137,88 @@ Hemos declarado que el parámetro `a` y `b` son del tipo `number` y que `printTe
 multiplicar('test', 4 'el resultado de multiplicar es:');
 // Argument 'test' is not assignable to parameter of type 'number'
 ```
+
+Vamos a complicar un poco lo aprendido viendo el siguiente ejemplo. Tenemos una calculadora que recibe dos parámetros de tipo de `number`. No solo podemos especificar el tipo de los parámetros si no que también podemos hacerlo del resultado incluso creando nuestros propios `customs types`.
+
+```tsx
+type Operations = 'add' | 'multiply' | 'divide' ;
+// al parametro op le hecho dicho que es del tipo operations por lo que solo podrá recibir uno de esos 3 valores
+type Result =  number;
+const calculator = (a:number, b:number, op:Operations):Result => {
+    switch (op) {
+        case 'add':
+            return a + b;
+        case 'multiply':
+           return a * b ;
+        case 'divide' :
+            if(b === 0) throw new Error('can\'t divide by 0');
+            return a / b;
+        default:
+            break;
+    }
+}
+```
+
+Hemos creado el `type Operations`, el cual solo puede contener uno de esos 3 valores, con lo que al parámetro `op` le decimos que sea tipo `Operations`, y a la función que es la que hace la calculo y nos debe retornar un resultado numérico de tipo `Result`, es decir, `number`. 
+
+## **[@types/{npm_package}](https://fullstackopen.com/es/part9/primeros_pasos_con_type_script#types-npm-package)**
+
+Los programas que hemos ido escribiendo están bien, pero sería útil lanzar esos cálculos sin tener que estar modificando continuamente el script. Podemos hacerlo desde lineas de comandos. Para es necesario escribir las tipificaciones para un librería, en este caso node.
+
+Por lo general, las tipificaciones de paquetes existentes se pueden encontrar en @types-organization dentro de npm, y puede agregar los tipos relevantes a su proyecto instalando un paquete npm con el nombre de su paquete con el prefijo @ types / -. Por ejemplo: npm install --save-dev @types/react @types/express @types/lodash @types/jest @types/mongoose y así sucesivamente**.** 
+
+Ejecutamos
+
+**`npm install --save-dev @types/node`**
+
+Ahora ya podemos lanzar el script desde la terminal, pero tenemos que retocar nuestro código.
+
+```jsx
+const multiply = (a: number, b:number, printText: string) => {
+    console.log(printText, a * b);
+}
+
+const a:number =  Number(process.argv[2]);
+const b:number =  Number(process.argv[3]);
+
+multiply(c, d, `el resultado de multiplicar ${c} * ${d} es:`)
+```
+
+Prueba a lanzar el siguiente comando.
+
+**`npm run multiply 3 10`**
+
+`**//el resultado de multiplicar 3 * 10 es: 30**`
+
+el porqué de pasarle las posiciones [2] y [3] es porque si hacemos un `console.log` de `process.argv` veremos que las dos primeras posiciones están ocupadas.
+
+Ahora prueba alanzar el siguiente comando 
+
+`npm run multiply 3 lol`
+
+**`//el resultado de multiplicar 3 * 10 es: NaN`**
+
+Está funcionando, la razón de esto es que `Number(’lol’)` devuelve `NaN` que es de tipo `number`por lo que el script sigue funcionando, y esto no debería ser así. Para ello parseamos los parámetros para comprobar que es de tipo `number` . El resultado mejorado se vería así:
+
+```jsx
+const parseArguments = (args) => {
+    if(args.length > 4) throw new Error('Too much arguments');
+    if(args.length < 4) throw new Error('not enought arguments');
+    if(!isNaN(Number(args[2])) && !isNaN(Number(args[3]))) {
+        return {
+            a : Number(args[2]),
+            b: Number(args[3])
+        }
+    } else {
+        throw new Error('Provided values were not numbers!');
+    }
+}
+
+const multiply = (a: number, b:number, printText: string) => {
+    console.log(printText, a * b);
+}
+
+const {a , b } = parseArguments(process.argv);
+
+multiply(a, b, `el resultado de multiplicar ${a} * ${b} es:`)
+```
