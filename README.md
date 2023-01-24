@@ -13,7 +13,7 @@ TS consta de 3 partes pero que se complementan mutuamente:
 - El compilador
 - El servicio de lenguajes
 
-![Captura de pantalla 2023-01-23 a las 9.52.41.png](/sources/images//Captura_de_pantalla_2023-01-23_a_las_9.52.41.png)
+![Captura de pantalla 2023-01-23 a las 9.52.41.png](/source/images//Captura_de_pantalla_2023-01-23_a_las_9.52.41.png)
 
 **El lenguaje** hace referencia a la *sintaxis*, palabras clave y algunas anotaciones. Es similar a Js pero no igual.
 
